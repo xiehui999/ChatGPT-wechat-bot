@@ -16,5 +16,5 @@ export default {
   // 是否在群聊中按照回复的格式进行回复
   groupReplyMode: true,
   // 是否在私聊中按照回复的格式进行回复
-  privateReplyMode: false,
+  privateReplyMode: true,
 };
