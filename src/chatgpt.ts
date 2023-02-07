@@ -49,7 +49,7 @@ export async function replyMessage(contact, content) {
       (contact.topic && contact?.topic() && config.groupReplyMode) ||
       (!contact.topic && config.privateReplyMode)
     ) {
-      const result = content + '\n-----------\n' + message;
+      const result = 'ChatGPT 回复: ' + '\n-----------\n' + message;
       await contact.say(result);
       return;
     } else {
