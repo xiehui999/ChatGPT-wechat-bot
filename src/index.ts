@@ -90,6 +90,7 @@ async function initProject() {
       puppet: 'wechaty-puppet-wechat', // 如果有token，记得更换对应的puppet
       puppetOptions: {
         uos: true,
+        cache: { message: 0 },
       },
     });
 
