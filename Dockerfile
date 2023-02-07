@@ -4,8 +4,7 @@ WORKDIR /code
 
 ADD package.json package-lock.json /code/
 
-RUN  npm install \
-     && npm run puppet-install
+RUN  npm install
 
 # Suppress an apt-key warning about standard out not being a terminal. Use in this script is safe.
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
