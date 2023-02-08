@@ -4,8 +4,13 @@ import config from './config.js';
 import { replyMessage, initChatGPT } from './chatgpt.js';
 
 let bot: any = {};
+const startTime = new Date();
 initProject();
 async function onMessage(msg) {
+  // 避免重复发送
+  if (msg.date() < startTime) {
+    return;
+  }
   const contact = msg.talker();
   const receiver = msg.to();
   const content = msg.text().trim();
@@ -37,11 +42,12 @@ async function onMessage(msg) {
   } else if (isText) {
     console.log(`talker: ${alias} content: ${content}`);
     if (config.autoReply) {
-      if (content.startsWith(config.privateKey)) {
-        replyMessage(
-          contact,
-          content.substring(config.privateKey.length).trim()
-        );
+      if (content.startsWith(config.privateKey) || config.privateKey === '') {
+        let privateContent = content;
+        if (config.privateKey === '') {
+          privateContent = content.substring(config.privateKey.length).trim();
+        }
+        replyMessage(contact, privateContent);
       } else {
         console.log(
           'Content is not within the scope of the customizition format'
