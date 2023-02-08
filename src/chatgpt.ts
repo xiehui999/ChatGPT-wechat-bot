@@ -10,7 +10,7 @@ export function initChatGPT() {
   });
 }
 
-const prefix = 'ChatGPT   ' + '\n-----------\n'
+const prefix = '\n'
 async function getChatGPTReply(content, contactId) {
   const { conversationId, text, id } = await chatGPT.sendMessage(
     content,
