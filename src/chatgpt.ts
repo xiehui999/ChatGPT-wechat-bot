@@ -10,6 +10,7 @@ export function initChatGPT() {
   });
 }
 
+const prefix = 'ChatGPT   ' + '\n-----------\n'
 async function getChatGPTReply(content, contactId) {
   const { conversationId, text, id } = await chatGPT.sendMessage(
     content,
@@ -21,13 +22,15 @@ async function getChatGPTReply(content, contactId) {
       parentMessageId: id,
     },
   };
-  console.log('response: ', conversationId, text);
+  console.log('response: ', conversationId, content,  text);
   // response is a markdown-formatted string
   return text;
 }
 
 export async function replyMessage(contact, content) {
   const { id: contactId } = contact;
+  const arr= content.split(prefix)
+  content = arr?.length > 1 ? arr[1] : arr[0]
   try {
     if (
       content.trim().toLocaleLowerCase() === config.resetKey.toLocaleLowerCase()
@@ -49,7 +52,7 @@ export async function replyMessage(contact, content) {
       (contact.topic && contact?.topic() && config.groupReplyMode) ||
       (!contact.topic && config.privateReplyMode)
     ) {
-      const result = 'ChatGPT 回复: ' + '\n-----------\n' + message;
+      const result = prefix + message;
       await contact.say(result);
       return;
     } else {
