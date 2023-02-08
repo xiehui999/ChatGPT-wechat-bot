@@ -4,13 +4,14 @@ import { retryRequest } from './utils.js';
 
 let chatGPT: any = {};
 let chatOption = {};
+const contactDisabled = {};
 export function initChatGPT() {
   chatGPT = new ChatGPTAPI({
     apiKey: config.OPENAI_API_KEY,
   });
 }
 
-const prefix = '\n'
+const prefix = '\n';
 async function getChatGPTReply(content, contactId) {
   const { conversationId, text, id } = await chatGPT.sendMessage(
     content,
@@ -22,15 +23,27 @@ async function getChatGPTReply(content, contactId) {
       parentMessageId: id,
     },
   };
-  console.log('response: ', conversationId, content,  text);
+  console.log('response: ', conversationId, content, text);
   // response is a markdown-formatted string
   return text;
 }
 
 export async function replyMessage(contact, content) {
   const { id: contactId } = contact;
-  const arr= content.split(prefix)
-  content = arr?.length > 1 ? arr[1] : arr[0]
+  const arr = content.split(prefix);
+  content = arr?.length > 1 ? arr[1] : arr[0];
+  if (contactDisabled[contactId] && config.startKey !== content) return;
+  if (contactDisabled[contactId] && config.startKey === content) {
+    contactDisabled[contactId] = false;
+  }
+  if (!contactDisabled[contactId] && config.endKey === content) {
+    chatOption = {
+      ...chatOption,
+      [contactId]: {},
+    };
+    contactDisabled[contactId] = true;
+    return;
+  }
   try {
     if (
       content.trim().toLocaleLowerCase() === config.resetKey.toLocaleLowerCase()
